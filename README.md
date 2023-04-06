@@ -8,6 +8,6 @@ https://msnews.github.io/
 
 ## Install
 
-1. Run `sh setup`.
+1. Run `sh setup.sh`.
 1. Create your virtual environment using requirements.txt
 1. Start app.py
