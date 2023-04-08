@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  index-retrieve:
+    build: .
+    volumes:
+      - "./data:/app/data"
