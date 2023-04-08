@@ -6,6 +6,7 @@ from src import index_data
 from src.model import BM25Okapi
 import pickle
 import nltk
+nltk.download('stopwords')
 nltk.download('punkt')
 
 
