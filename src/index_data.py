@@ -53,7 +53,7 @@ def create(fpath, idxpath):
     corpus = df_no_nan["preprocessed_text"].tolist()
 
     # Create and save index
-    model = BM25Okapi(corpus)
+    model = BM25Okapi(corpus, tokenizer=nltk.word_tokenize)
     pkl_data = {
         "model": model,
         "data_index": df_no_nan.index,
