@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-
+from typing import List
+from collections import defaultdict
 import math
 import numpy as np
 from multiprocessing import Pool, cpu_count
@@ -13,7 +13,7 @@ Here we implement all the BM25 variations mentioned.
 
 
 class BM25:
-    def __init__(self, corpus, tokenizer=None):
+    def __init__(self, corpus: List[str], tokenizer):
         self.corpus_size = 0
         self.avgdl = 0
         self.doc_freqs = []
@@ -28,25 +28,20 @@ class BM25:
         self._calc_idf(nd)
 
     def _initialize(self, corpus):
-        nd = {}  # word -> number of documents with word
+        # word -> number of documents with word
+        nd = defaultdict(int)
         num_doc = 0
         for document in corpus:
             self.doc_len.append(len(document))
             num_doc += len(document)
 
-            frequencies = {}
+            frequencies = defaultdict(int)      # word: frequency
             for word in document:
-                if word not in frequencies:
-                    frequencies[word] = 0
                 frequencies[word] += 1
             self.doc_freqs.append(frequencies)
 
-            for word, freq in frequencies.items():
-                try:
-                    nd[word]+=1
-                except KeyError:
-                    nd[word] = 1
-
+            for word, _ in frequencies.items():
+                nd[word] += 1
             self.corpus_size += 1
 
         self.avgdl = num_doc / self.corpus_size
@@ -66,13 +61,15 @@ class BM25:
     def get_batch_scores(self, query, doc_ids):
         raise NotImplementedError()
 
-    def get_top_n(self, query, documents, n=5):
-
-        assert self.corpus_size == len(documents), "The documents given don't match the index corpus!"
-
+    def get_top_n(self, query:str, documents, n=5):
+        assert self.corpus_size == len(
+            documents
+        ), "The documents given don't match the index corpus!"
+        if self.tokenizer:
+            query = self.tokenizer(query)
         scores = self.get_scores(query)
         top_n = np.argsort(scores)[::-1][:n]
-        return [documents[i] for i in top_n], scores
+        return [documents[i] for i in top_n], scores[top_n]
 
 
 class BM25Okapi(BM25):
@@ -116,8 +113,11 @@ class BM25Okapi(BM25):
         doc_len = np.array(self.doc_len)
         for q in query:
             q_freq = np.array([(doc.get(q) or 0) for doc in self.doc_freqs])
-            score += (self.idf.get(q) or 0) * (q_freq * (self.k1 + 1) /
-                                               (q_freq + self.k1 * (1 - self.b + self.b * doc_len / self.avgdl)))
+            score += (self.idf.get(q) or 0) * (
+                q_freq
+                * (self.k1 + 1)
+                / (q_freq + self.k1 * (1 - self.b + self.b * doc_len / self.avgdl))
+            )
         return score
 
     def get_batch_scores(self, query, doc_ids):
@@ -129,6 +129,9 @@ class BM25Okapi(BM25):
         doc_len = np.array(self.doc_len)[doc_ids]
         for q in query:
             q_freq = np.array([(self.doc_freqs[di].get(q) or 0) for di in doc_ids])
-            score += (self.idf.get(q) or 0) * (q_freq * (self.k1 + 1) /
-                                               (q_freq + self.k1 * (1 - self.b + self.b * doc_len / self.avgdl)))
+            score += (self.idf.get(q) or 0) * (
+                q_freq
+                * (self.k1 + 1)
+                / (q_freq + self.k1 * (1 - self.b + self.b * doc_len / self.avgdl))
+            )
         return score.tolist()
