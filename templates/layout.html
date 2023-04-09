@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Engine</title>
+
+    <!-- External CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
+    />
+
+    <style>
+      /* Custom CSS */
+    
+      .navbar {
+        background-color: #333;
+        color: #fff;
+        border-radius: 0;
+      }
+      .navbar-brand {
+        font-family: "Lora", serif;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 15px 0;
+      }
+      .form-control {
+        border-radius: 0;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border: none;
+        border-radius: 0;
+      }
+      .btn-primary:hover {
+        background-color: #0069d9;
+      }
+      hr {
+        border-top: 1px solid #333;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="main">{% block body %}{% endblock %}</section>
+  </body>
+</html>
