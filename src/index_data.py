@@ -1,51 +1,63 @@
+"""
+Creates the Index and prepares index for the BM25 models
+"""
 import string
 import pickle
 from nltk.corpus import stopwords
 import pandas as pd
-from src import index_data
-from src.model import BM25Okapi
-import pickle
 import nltk
+from src.model import BM25Okapi
 nltk.download('stopwords')
 nltk.download('punkt')
 
 
 stop_words = set(stopwords.words("english"))
 
+
 def preprocess_text(text):
+    """Preprocess text, used before indexing and query search
+    """
     text = text.lower()  # convert to lowercase
-    text = "".join([char for char in text if char not in string.punctuation])  # remove punctuation
-    text = " ".join([word for word in text.split() if word not in stop_words])  # remove stop words
+    # remove punctuation
+    text = "".join([char for char in text if char not in string.punctuation])
+    # remove stop words
+    text = " ".join([word for word in text.split() if word not in stop_words])
     return text
 
+
 def load(idxpath):
-    with open(idxpath, "rb") as f:
-        pkl_data = pickle.load(f)
+    """Loads the pickle file.
+    """
+    with open(idxpath, "rb") as idx_file:
+        pkl_data = pickle.load(idx_file)
     return pkl_data['model'], pkl_data['data_index']
 
 
 def create(fpath, idxpath):
+    """ Creates index and returns the corpus dataframe
+    """
     dataset_file = fpath
-    COL_NAMES = ["doc_id", "category", "subcategory", "title", "abstract", "url", "title_entities", "abstract_entities"]
-    df = pd.read_csv(dataset_file, sep="\t", header=None, names=COL_NAMES)
-    print(f"Data dimensions: {df.shape}")
+    col_names = ["doc_id", "category", "subcategory", "title",
+                 "abstract", "url", "title_entities", "abstract_entities"]
+    df_original = pd.read_csv(dataset_file, sep="\t",
+                              header=None, names=col_names)
+    print(f"Data dimensions: {df_original.shape}")
 
     # drop when df["title"] & df["abstract"] are nan
-    df_no_nan = df.dropna(subset=["title", "abstract"])
+    df_no_nan = df_original.dropna(subset=["title", "abstract"])
     print(f"Data dimensions after removing nan: {df_no_nan.shape}")
 
     # preprocess the text
     df_no_nan["text"] = df_no_nan["title"] + " " + df_no_nan["abstract"]
-    df_no_nan["preprocessed_text"] = df_no_nan["text"].apply(index_data.preprocess_text)
+    df_no_nan["preprocessed_text"] = df_no_nan["text"].apply(preprocess_text)
     corpus = df_no_nan["preprocessed_text"].tolist()
 
     # Create and save index
-    model = BM25Okapi(corpus)
+    model = BM25Okapi(corpus, tokenizer=nltk.word_tokenize)
     pkl_data = {
         "model": model,
         "data_index": df_no_nan.index,
     }
-    with open(idxpath, "wb") as f:
-        pickle.dump(pkl_data, f)
-
-    return df
+    with open(idxpath, "wb") as idx_file:
+        pickle.dump(pkl_data, idx_file)
+    return df_original
