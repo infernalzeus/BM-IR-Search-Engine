@@ -10,10 +10,10 @@ if __name__ == "__main__":
     while True:
         query = input("Enter your query: ")
         # preprocess and query
-        tokenized_query = index_data.preprocess_text(query).split()
+        processed_query = index_data.preprocess_text(query)
 
         # process
-        results, scores = model.get_top_n(tokenized_query, data_index, n=10)
+        results, scores = model.get_top_n(processed_query, data_index, n=10)
         for i, s in zip(results, scores):
             ans = df.iloc[i]
             print("Query match score:", s)
