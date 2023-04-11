@@ -8,7 +8,7 @@ https://msnews.github.io/
 
 ## Setup / Install
 
-Run `sh setup.sh`
+`sh setup.sh`
 
 ## Deploy Search Engine
 
