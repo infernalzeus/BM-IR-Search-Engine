@@ -6,8 +6,17 @@ This is a project following the Search Engine Design Assignment.
 
 https://msnews.github.io/
 
-## Install
+## Setup / Install
 
-1. Run `sh setup.sh`.
-1. Create your virtual environment using requirements.txt
-1. Start app.py
+`sh setup.sh`
+
+## Deploy Search Engine
+
+`python3 app.py`
+
+## Deployment
+
+Code will run and deploy the search engine.
+
+Link to Honest Search Engine
+http://127.0.0.1:5005/
