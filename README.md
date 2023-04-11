@@ -4,7 +4,12 @@ This is a project following the Search Engine Design Assignment.
 
 ## Data
 
+- Small dataset = 50,000
+- Large dataset = 1M
+
 https://msnews.github.io/
+
+Data description: https://github.com/msnews/msnews.github.io/blob/master/assets/doc/introduction.md
 
 ## Setup / Install
 

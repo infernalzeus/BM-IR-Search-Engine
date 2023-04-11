@@ -37,13 +37,21 @@
                         </h3>
                         <p>{{ final['abstract'][i] | truncate(300) }}</p>
                         <div class="row">
-                            <div class="text-right">
+                            <div class="col-xs-6 text-right">
                                 <i class="glyphicon glyphicon-dashboard"></i>
                                 BM25 Score: {{ '%.2f' % final['query_match_score'][i] }}
                             </div>
                             <div class="text-right">
-                                <i class="glyphicon glyphicon-dashboard"></i>
-                                Fraud Probability: {{ final['fraud_score'][i] }}
+                                <i class="glyphicon glyphicon-ok-circle"></i>
+                                Sentiment Score: {{ final['sentiment_score'][i] }}
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <i class="glyphicon glyphicon-signal"></i>
+                                Subjectivity Score: {{ final['subjectivity_score'][i] }}
+                            </div>
+                            <div class="text-right">
+                                <i class="glyphicon glyphicon-tag"></i>
+                                Category: {{ final['news_category'][i] }}
                             </div>
                         </div>
                     </div>
