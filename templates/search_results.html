@@ -24,26 +24,26 @@
         <hgroup class="mb20"></hgroup>
         <hgroup class="mb20" style="border: none;">
             <h1>Search Results</h1>
-            <h2 class="lead"><strong>{{ json_results|length }}</strong> results were found for the
+            <h2 class="lead"><strong>{{ final[0]|length }}</strong> results were found for the
                 search for <strong>{{ query }}</strong></h2>
         </hgroup>
 
         <section class="col-xs-12 col-md-12">
-            {% for score, article in json_results %}
+            {% for query_match_score, title, abstract, link, fraud_score in final %}
                 <article class="search-result row">
                     <div class="col-xs-12 col-sm-9 excerpet">
                         <h3 class="article-title">
-                            <a href="{{ article.url }}" title="{{ article.title }}">{{ article.title }}</a>
+                            <a href="{{ link }}" title="{{ title }}">{{ title }}</a>
                         </h3>
-                        <p>{{ article.summary | truncate(300) }}</p>
+                        <p>{{ abstract | truncate(300) }}</p>
                         <div class="row">
                             <div class="text-right">
                                 <i class="glyphicon glyphicon-dashboard"></i>
-                                BM25 Score: {{ '%.2f' % score }}
+                                BM25 Score: {{ '%.2f' % query_match_score }}
                             </div>
                             <div class="text-right">
                                 <i class="glyphicon glyphicon-dashboard"></i>
-                                Fraud Probability: {{ '%.2f' % article.fraud_score }}
+                                Fraud Probability: {{ '%.2f' % fraud_score }}
                             </div>
                         </div>
                     </div>
