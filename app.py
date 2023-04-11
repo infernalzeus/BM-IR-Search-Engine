@@ -1,4 +1,5 @@
 from src import index_data
+from src.model import get_sentiment
 from flask import Flask, request, render_template
 import random
 
@@ -22,7 +23,9 @@ def search():
         processed_query, data_index, n=random.randint(15, 50))
 
     final = {'query_match_score': [],
-             'title': [], 'abstract': [], 'link': [], 'fraud_score': []}
+             'title': [], 'abstract': [], 'link': [], 
+             'sentiment_score': [], 'subjectivity_score': [],
+             'news_category': []}
 
     for i, s in zip(results, scores):
         ans = df.iloc[i]
@@ -31,7 +34,10 @@ def search():
             final['title'].append(ans["title"])
             final['abstract'].append(ans["abstract"])
             final['link'].append(ans["url"])
-            final['fraud_score'].append('empty for now')
+            sentiment_score, subjectivity_score = get_sentiment(ans["title"] + ' ' + ans['abstract'])
+            final['sentiment_score'].append(sentiment_score)
+            final['subjectivity_score'].append(subjectivity_score)
+            final['news_category'].append(ans['category'].title() or 'No category')
     
     return render_template('search_results.html', final=final, query=query)
 

@@ -1,15 +1,16 @@
+"""
+All of the BM25 algorithms have been taken from the paper:
+Trotmam et al, Improvements to BM25 and Language Models Examined
+
+Here we implement all the BM25 variations mentioned. 
+"""
+
 from typing import List
 from collections import defaultdict
 import math
 import numpy as np
 from multiprocessing import Pool, cpu_count
-
-"""
-All of these algorithms have been taken from the paper:
-Trotmam et al, Improvements to BM25 and Language Models Examined
-
-Here we implement all the BM25 variations mentioned. 
-"""
+from textblob import TextBlob
 
 
 class BM25:
@@ -135,3 +136,13 @@ class BM25Okapi(BM25):
                 / (q_freq + self.k1 * (1 - self.b + self.b * doc_len / self.avgdl))
             )
         return score.tolist()
+
+def get_sentiment(sentence):
+    blob = TextBlob(sentence)
+
+    # Sentiment from  -1 (negative) to 1 (positive)
+    # Subjectivity: from 0 (objective) to 1 (subjective)
+    polarity = blob.sentiment.polarity
+    subjectivity = blob.sentiment.subjectivity
+
+    return round(polarity, 2), round(subjectivity, 2)
