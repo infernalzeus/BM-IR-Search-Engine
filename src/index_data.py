@@ -7,12 +7,13 @@ from nltk.corpus import stopwords
 import pandas as pd
 import nltk
 from src.model import BM25Okapi
-nltk.download('stopwords')
-nltk.download('punkt')
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
 
 
 stop_words = set(stopwords.words("english"))
 
+pd.options.mode.chained_assignment = None
 
 def preprocess_text(text):
     """Preprocess text, used before indexing and query search
