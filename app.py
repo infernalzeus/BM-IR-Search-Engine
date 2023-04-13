@@ -1,6 +1,7 @@
 from src import index_data
 from src.model import get_sentiment
 from flask import Flask, request, render_template
+import flask.cli
 import random
 
 
@@ -23,22 +24,24 @@ def search():
         processed_query, data_index, n=random.randint(15, 50))
 
     final = {'query_match_score': [],
-             'title': [], 'abstract': [], 'link': [], 
+             'title': [], 'abstract': [], 'link': [],
              'sentiment_score': [], 'subjectivity_score': [],
              'news_category': []}
 
     for i, s in zip(results, scores):
         ans = df.iloc[i]
-        if s!=0:
+        if s != 0:
             final['query_match_score'].append(s)
             final['title'].append(ans["title"])
             final['abstract'].append(ans["abstract"])
             final['link'].append(ans["url"])
-            sentiment_score, subjectivity_score = get_sentiment(ans["title"] + ' ' + ans['abstract'])
+            sentiment_score, subjectivity_score = get_sentiment(
+                ans["title"] + ' ' + ans['abstract'])
             final['sentiment_score'].append(sentiment_score)
             final['subjectivity_score'].append(subjectivity_score)
-            final['news_category'].append(ans['category'].title() or 'No category')
-    
+            final['news_category'].append(
+                ans['category'].title() or 'No category')
+
     return render_template('search_results.html', final=final, query=query)
 
 
@@ -48,4 +51,7 @@ if __name__ == "__main__":
 
     df = index_data.create(DATASET_PATH, INDEX_PATH)
     model, data_index = index_data.load(INDEX_PATH)
+
+    flask.cli.show_server_banner = lambda *args: None
+
     app.run(debug=False, host='0.0.0.0', port=5005)
