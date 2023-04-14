@@ -46,7 +46,7 @@ def search():
 
 
 if __name__ == "__main__":
-    DATASET_PATH = "data/MINDsmall_train/news.tsv"
+    DATASET_PATH = "data/MINDlarge_train/news.tsv"
     INDEX_PATH = "data/index/news.pickle"
 
     df = index_data.create(DATASET_PATH, INDEX_PATH)
