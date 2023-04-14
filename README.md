@@ -18,7 +18,7 @@ There are two ways to setup the project:
 1. Using local environment
     1. Create and activate a virtual environment (eg: `conda create -n ir python=3.9 -y && conda activate ir`)
     1. Run `sh setup.sh`
-    1. `python app.py`
+    1. `python3 app.py`
 
 2. Or Using docker approach: `docker-compose up`
 
